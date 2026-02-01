@@ -36,7 +36,8 @@ var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 if (!string.IsNullOrEmpty(databaseUrl))
 {
     // Parse DATABASE_URL from Render (postgres://user:pass@host:port/db)
-    var databaseUri = new Uri(databaseUrl);
+    // Replace postgres:// with http:// for Uri parsing (Uri class doesn't recognize postgres scheme)
+    var databaseUri = new Uri(databaseUrl.Replace("postgres://", "http://"));
     var userInfo = databaseUri.UserInfo.Split(':');
     
     connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.AbsolutePath.Trim('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
