@@ -114,40 +114,48 @@ using (var scope = app.Services.CreateScope())
         context.Database.Migrate(); // Apply pending migrations
         
         // Seed default admin account if not exists
-        if (!context.AppUsers.Any(u => u.Username == "admin"))
+        var adminUser = context.AppUsers.FirstOrDefault(u => u.Username == "admin");
+        if (adminUser == null)
         {
-            var adminUser = new AppUser
+            adminUser = new AppUser
             {
                 Username = "admin",
-                Password = "123", // Simple for testing
+                Password = "123", 
                 Role = "Admin"
             };
             context.AppUsers.Add(adminUser);
             context.SaveChanges();
+        }
+        else
+        {
+            // Ensure password is correct
+            adminUser.Password = "123";
+            context.SaveChanges();
+        }
             
-            // Link to a Member record
-            if (!context.Members.Any(m => m.AppUserId == adminUser.Id))
+        // Link to a Member record
+        if (!context.Members.Any(m => m.AppUserId == adminUser.Id))
+        {
+            context.Members.Add(new _177_Members
             {
-                context.Members.Add(new _177_Members
-                {
-                    AppUserId = adminUser.Id,
-                    FullName = "Administrator",
-                    JoinDate = DateTime.Now,
-                    RankLevel = 5.0,
-                    IsActive = true,
-                    WalletBalance = 1000000m,
-                    TotalSpent = 0m,
-                    Tier = MemberTier.Diamond,
-                    AvatarUrl = ""
-                });
-                context.SaveChanges();
-            }
+                AppUserId = adminUser.Id,
+                FullName = "Administrator",
+                JoinDate = DateTime.Now,
+                RankLevel = 5.0,
+                IsActive = true,
+                WalletBalance = 1000000m,
+                TotalSpent = 0m,
+                Tier = MemberTier.Diamond,
+                AvatarUrl = ""
+            });
+            context.SaveChanges();
         }
 
         // Seed default member account if not exists
-        if (!context.AppUsers.Any(u => u.Username == "user"))
+        var regularUser = context.AppUsers.FirstOrDefault(u => u.Username == "user");
+        if (regularUser == null)
         {
-            var regularUser = new AppUser
+            regularUser = new AppUser
             {
                 Username = "user",
                 Password = "123",
@@ -155,23 +163,29 @@ using (var scope = app.Services.CreateScope())
             };
             context.AppUsers.Add(regularUser);
             context.SaveChanges();
+        }
+        else
+        {
+            // Ensure password is correct
+            regularUser.Password = "123";
+            context.SaveChanges();
+        }
             
-            if (!context.Members.Any(m => m.AppUserId == regularUser.Id))
+        if (!context.Members.Any(m => m.AppUserId == regularUser.Id))
+        {
+            context.Members.Add(new _177_Members
             {
-                context.Members.Add(new _177_Members
-                {
-                    AppUserId = regularUser.Id,
-                    FullName = "Thành Viên Mẫu",
-                    JoinDate = DateTime.Now,
-                    RankLevel = 3.5,
-                    IsActive = true,
-                    WalletBalance = 500000m,
-                    TotalSpent = 0m,
-                    Tier = MemberTier.Gold,
-                    AvatarUrl = ""
-                });
-                context.SaveChanges();
-            }
+                AppUserId = regularUser.Id,
+                FullName = "Thành Viên Mẫu",
+                JoinDate = DateTime.Now,
+                RankLevel = 3.5,
+                IsActive = true,
+                WalletBalance = 500000m,
+                TotalSpent = 0m,
+                Tier = MemberTier.Gold,
+                AvatarUrl = ""
+            });
+            context.SaveChanges();
         }
     }
     catch (Exception ex)
