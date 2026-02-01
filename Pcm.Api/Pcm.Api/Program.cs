@@ -37,7 +37,8 @@ if (!string.IsNullOrEmpty(databaseUrl))
 {
     // Parse DATABASE_URL from Render (postgres://user:pass@host:port/db)
     // Handle both postgres:// and postgresql:// and provide default port if missing
-    var formattedUrl = databaseUrl.Replace("postgresql://", "http://").Replace("postgres://", "http://");
+    // Use tcp:// instead of http:// to avoid defaulting to port 80
+    var formattedUrl = databaseUrl.Replace("postgresql://", "tcp://").Replace("postgres://", "tcp://");
     var databaseUri = new Uri(formattedUrl);
     var userInfo = databaseUri.UserInfo.Split(':');
     
