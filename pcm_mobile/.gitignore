@@ -1,0 +1,10 @@
+/build/
+.dart_tool/
+.pub/
+.pub-cache/
+.idea/
+.vscode/
+*.iml
+*.log
+android/.gradle/
+ios/Pods/
