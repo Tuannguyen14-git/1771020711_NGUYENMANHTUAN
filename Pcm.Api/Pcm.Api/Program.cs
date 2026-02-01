@@ -36,11 +36,18 @@ var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 if (!string.IsNullOrEmpty(databaseUrl))
 {
     // Parse DATABASE_URL from Render (postgres://user:pass@host:port/db)
-    // Replace postgres:// with http:// for Uri parsing (Uri class doesn't recognize postgres scheme)
-    var databaseUri = new Uri(databaseUrl.Replace("postgres://", "http://"));
+    // Handle both postgres:// and postgresql:// and provide default port if missing
+    var formattedUrl = databaseUrl.Replace("postgresql://", "http://").Replace("postgres://", "http://");
+    var databaseUri = new Uri(formattedUrl);
     var userInfo = databaseUri.UserInfo.Split(':');
     
-    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.AbsolutePath.Trim('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    var host = databaseUri.Host;
+    var port = databaseUri.Port > 0 ? databaseUri.Port : 5432;
+    var database = databaseUri.AbsolutePath.Trim('/');
+    var user = userInfo[0];
+    var password = userInfo.Length > 1 ? userInfo[1] : "";
+    
+    connectionString = $"Host={host};Port={port};Database={database};Username={user};Password={password};SSL Mode=Require;Trust Server Certificate=true";
     usePostgres = true;
 }
 
@@ -121,6 +128,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<PcmHub>("/pcmHub");
+
+// Root endpoint for simple health check
+app.MapGet("/", () => "PCM API is running on Render!");
+
 #endregion
 
 app.Run();
