@@ -31,10 +31,13 @@ jobs:
         run: flutter build web --release --base-href /
         working-directory: ./pcm_mobile
 
+      - name: Check build output
+        run: ls -R pcm_mobile/build/web
+
       - name: Deploy to web-deploy branch
-        uses: s0/git-publish-subdir-action@develop
-        env:
-          REPO: self
-          BRANCH: web-deploy # Branch Render will pull from
-          FOLDER: pcm_mobile/build/web
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: pcm_mobile/build/web
+          branch: web-deploy
+          token: ${{ secrets.GITHUB_TOKEN }}
+          clean: true
