@@ -52,4 +52,42 @@ class BookingService {
       throw Exception('Failed to confirm booking: $e');
     }
   }
+
+  // Create single booking
+  Future<Map<String, dynamic>> createBooking(Map<String, dynamic> data) async {
+    try {
+      final response = await _apiClient.dio.post('/api/bookings', data: data);
+      return response.data;
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+         throw Exception(e.response!.data);
+      }
+      throw Exception('Failed to create booking: $e');
+    }
+  }
+
+  // Create recurring booking
+  Future<Map<String, dynamic>> createRecurringBooking(Map<String, dynamic> data) async {
+    try {
+      final response = await _apiClient.dio.post('/api/bookings/recurring', data: data);
+      return response.data;
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+         throw Exception(e.response!.data);
+      }
+      throw Exception('Failed to create recurring booking: $e');
+    }
+  }
+
+  // Cancel booking
+  Future<void> cancelBooking(int bookingId) async {
+    try {
+      await _apiClient.dio.delete('/api/bookings/$bookingId');
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+         throw Exception(e.response!.data);
+      }
+      throw Exception('Failed to cancel booking: $e');
+    }
+  }
 }

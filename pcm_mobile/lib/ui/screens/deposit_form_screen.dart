@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/wallet_provider.dart';
+import '../../providers/auth_provider.dart';
 
 class DepositFormScreen extends StatefulWidget {
   const DepositFormScreen({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class _DepositFormScreenState extends State<DepositFormScreen> {
   @override
   Widget build(BuildContext context) {
     final walletProvider = Provider.of<WalletProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Nạp tiền vào ví')),
       body: Padding(
@@ -47,16 +49,30 @@ class _DepositFormScreenState extends State<DepositFormScreen> {
                         );
                         return;
                       }
-                      await walletProvider.deposit(
-                        double.parse(_amountController.text),
-                        imagePath!,
-                      );
-                      if (walletProvider.error != null) {
+                      
+                      final memberId = authProvider.currentUser?.id;
+                      if (memberId == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(walletProvider.error!)),
+                          const SnackBar(
+                            content: Text('Vui lòng đăng nhập lại'),
+                          ),
                         );
-                      } else {
-                        Navigator.of(context).pop();
+                        return;
+                      }
+                      
+                      await walletProvider.deposit(
+                        memberId,
+                        double.parse(_amountController.text),
+                        'Nạp tiền qua chuyển khoản',
+                      );
+                      if (mounted) {
+                        if (walletProvider.error != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(walletProvider.error!)),
+                          );
+                        } else {
+                          Navigator.of(context).pop();
+                        }
                       }
                     },
                     child: const Text('Xác nhận nạp tiền'),

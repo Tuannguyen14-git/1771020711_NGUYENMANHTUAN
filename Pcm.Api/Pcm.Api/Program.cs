@@ -27,11 +27,34 @@ builder.Services.AddSignalR();
 #endregion
 
 #region DATABASE
-builder.Services.AddDbContext<PcmDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    )
-);
+// Support both SQL Server (local) and PostgreSQL (production)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var usePostgres = builder.Configuration.GetValue<bool>("UsePostgreSQL");
+
+// Check for Render DATABASE_URL environment variable
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (!string.IsNullOrEmpty(databaseUrl))
+{
+    // Parse DATABASE_URL from Render (postgres://user:pass@host:port/db)
+    var databaseUri = new Uri(databaseUrl);
+    var userInfo = databaseUri.UserInfo.Split(':');
+    
+    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.AbsolutePath.Trim('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    usePostgres = true;
+}
+
+if (usePostgres)
+{
+    builder.Services.AddDbContext<PcmDbContext>(options =>
+        options.UseNpgsql(connectionString)
+    );
+}
+else
+{
+    builder.Services.AddDbContext<PcmDbContext>(options =>
+        options.UseSqlServer(connectionString)
+    );
+}
 #endregion
 
 #region JWT AUTHENTICATION

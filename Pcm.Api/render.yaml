@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: pcm-api
+    env: docker
+    region: singapore
+    plan: free
+    healthCheckPath: /swagger
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: UsePostgreSQL
+        value: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pcm-db
+          property: connectionString
+      - key: Jwt__Key
+        generateValue: true
+      - key: Jwt__Issuer
+        value: Pcm.Api
+      - key: Jwt__Audience
+        value: Pcm.Mobile
+      - key: Jwt__ExpireMinutes
+        value: 120
+
+databases:
+  - name: pcm-db
+    databaseName: pcm_database
+    plan: free
+    region: singapore

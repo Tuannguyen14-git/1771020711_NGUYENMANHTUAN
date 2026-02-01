@@ -11,7 +11,8 @@ class BookingProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     try {
-      bookings = await BookingService().getCalendar(from, to);
+      final data = await BookingService().getCalendar(from, to);
+      bookings = (data as List).map((item) => Booking.fromJson(item)).toList();
       error = null;
     } catch (e) {
       error = 'Không thể tải lịch đặt sân';
