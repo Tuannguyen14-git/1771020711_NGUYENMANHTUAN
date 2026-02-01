@@ -94,6 +94,23 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Auto-apply migrations on startup (for production deployment)
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<PcmDbContext>();
+        context.Database.Migrate(); // Apply pending migrations
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
+}
+
+
 #region MIDDLEWARE PIPELINE
 app.UseSwagger();
 app.UseSwaggerUI();
