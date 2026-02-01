@@ -1,13 +1,15 @@
 import 'package:flutter/foundation.dart';
 
 class Constants {
+  // PRODUCTION - Render.com backend
+  static const String productionUrl = 'https://one771020711-nguyenmanhtuan.onrender.com';
+  
   static String get baseUrl {
-    if (kIsWeb) return 'https://localhost:7043';
-    return 'https://192.168.1.245:7043';  // Computer IP for real device testing
+    // Use production URL for both web and mobile
+    return productionUrl;
   }
 
   static String get signalRHubUrl {
-    if (kIsWeb) return 'https://localhost:7043/pcmHub';
-    return 'https://10.0.2.2:7043/pcmHub';
+    return '$productionUrl/pcmHub';
   }
 }
