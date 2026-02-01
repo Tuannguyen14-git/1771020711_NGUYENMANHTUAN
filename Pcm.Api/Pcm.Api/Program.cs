@@ -143,6 +143,36 @@ using (var scope = app.Services.CreateScope())
                 context.SaveChanges();
             }
         }
+
+        // Seed default member account if not exists
+        if (!context.AppUsers.Any(u => u.Username == "user"))
+        {
+            var regularUser = new AppUser
+            {
+                Username = "user",
+                Password = "123",
+                Role = "Member"
+            };
+            context.AppUsers.Add(regularUser);
+            context.SaveChanges();
+            
+            if (!context.Members.Any(m => m.AppUserId == regularUser.Id))
+            {
+                context.Members.Add(new _177_Members
+                {
+                    AppUserId = regularUser.Id,
+                    FullName = "Thành Viên Mẫu",
+                    JoinDate = DateTime.Now,
+                    RankLevel = 3.5,
+                    IsActive = true,
+                    WalletBalance = 500000m,
+                    TotalSpent = 0m,
+                    Tier = MemberTier.Gold,
+                    AvatarUrl = ""
+                });
+                context.SaveChanges();
+            }
+        }
     }
     catch (Exception ex)
     {
