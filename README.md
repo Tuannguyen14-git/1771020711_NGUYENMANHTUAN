@@ -1,36 +1,48 @@
-# 🏸 Pickleball Club Management (PCM) - Mobile App
+# 🏸 Pickleball Club Management (PCM) - Fullstack Deployment
 
-**Đồ án Môn học Mobile - Flutter**  
+**Đồ án Môn học Mobile - Flutter & Backend API**  
 **MSSV**: 1771020711  
 **Họ tên**: Nguyễn Mạnh Tuấn
 
 ---
 
-## 📋 Mô tả dự án
+## 🚀 TRẠNG THÁI TRIỂN KHAI (LIVE)
 
-Ứng dụng quản lý câu lạc bộ Pickleball **Vợt Thủ Phố Núi**, bao gồm:
-- ✅ **Quản lý thành viên** (Đăng ký, đăng nhập, phân quyền)
-- ✅ **Đặt sân** (Lịch đặt sân, xác nhận booking)
-- ✅ **Ví điện tử** (Nạp tiền, thanh toán)
-- ✅ **Giải đấu** (Xem danh sách, đăng ký tham gia)
-- ✅ **Thống kê & Tài chính** (Dashboard Admin, doanh thu, top members)
+Dự án đã được triển khai hoàn chỉnh trên môi trường Production để giảng viên có thể test trực tiếp mà không cần cài đặt môi trường backend:
+
+- **🌍 Backend API (Render)**: [https://one771020711-nguyenmanhtuan.onrender.com/](https://one771020711-nguyenmanhtuan.onrender.com/)
+- **📚 API Documentation (Swagger)**: [https://one771020711-nguyenmanhtuan.onrender.com/swagger](https://one771020711-nguyenmanhtuan.onrender.com/swagger)
+- **📱 Mobile App (Android APK)**: `pcm_mobile/build/app/outputs/flutter-apk/app-release.apk`
+- **🌐 Flutter Web (Render - Coming Soon)**: Đang trong quá trình triển khai bản Web.
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## 📋 Mô tả dự án
 
-### **Frontend (Mobile)**
-- **Flutter** 3.10+
-- **Dart** SDK 3.10+
-- **State Management**: Provider
-- **HTTP Client**: Dio
-- **UI Libraries**: fl_chart, table_calendar
+Ứng dụng quản lý câu lạc bộ Pickleball **Vợt Thủ Phố Núi**, giải quyết trọn vẹn bài toán từ đặt sân, quản lý hội viên đến thống kê doanh thu thời gian thực:
+
+- ✅ **Quản lý thành viên**: Đăng ký, đăng nhập bảo mật với JWT, tự động tạo hồ sơ hội viên.
+- ✅ **Hệ thống đặt sân (Real-time)**: Xem lịch sân trực quan theo ngày, đặt sân theo khung giờ, tự động tính giá.
+- ✅ **Ví điện tử (e-Wallet)**: Nạp tiền (Demo), quản lý số dư, thanh toán booking tự động trừ tiền trong ví.
+- ✅ **Quản lý giải đấu**: Hiển thị sơ đồ thi đấu (Bracket), đăng ký tham gia giải.
+- ✅ **Dashboard Admin**: Biểu đồ doanh thu (Fl Chart), thống kê Top Members chi tiêu, quản lý toàn bộ hệ thống.
+
+---
+
+## 🛠️ Công nghệ sử dụng (Production Stack)
+
+### **Frontend (Mobile & Web)**
+- **Flutter 3.x**: Đa nền tảng (Android & Web).
+- **State Management**: Provider (Quản lý trạng thái ứng dụng tập trung).
+- **Network**: Dio (Xử lý request API hiệu quả).
+- **UI/UX**: Custom theme (vibrant colors), fl_chart (biểu đồ), table_calendar.
 
 ### **Backend (API)**
-- **.NET 8.0** (ASP.NET Core Web API)
-- **Entity Framework Core** (SQL Server)
-- **JWT Authentication**
-- **SignalR** (Real-time notifications)
+- **ASP.NET Core 8.0**: Framework backend mạnh mẽ nhất hiện nay.
+- **Entity Framework Core**: Quản lý database theo mô hình Code First.
+- **Database**: **PostgreSQL** (Triển khai trên Cloud Render).
+- **Authentication**: JWT (JSON Web Token) bảo mật cao.
+- **Deployment**: Dockerized (Container cho phép chạy ổn định trên mọi môi trường).
 
 ---
 
@@ -38,222 +50,59 @@
 
 ```
 MOBILE_FLUTTER_1771020711_NguyenManhTuan/
-├── pcm_mobile/              # Flutter Mobile App
-│   ├── lib/
-│   │   ├── models/          # Data models
-│   │   ├── services/        # API services
-│   │   ├── providers/       # State management
-│   │   ├── ui/screens/      # UI screens
-│   │   └── main.dart
-│   └── pubspec.yaml
-│
-├── Pcm.Api/                 # .NET Backend API
-│   ├── Pcm.Api/
-│   │   ├── Controllers/     # API Controllers
-│   │   ├── Models/          # Database models
-│   │   ├── DTOs/            # Data Transfer Objects
-│   │   └── Program.cs
-│   └── Pcm.Api.sln
-│
+├── pcm_mobile/              # Flutter Mobile App (Source Code)
+│   ├── build/outputs/apk/   # Chứa file APK đã build hoàn chỉnh
+│   └── lib/                 # Logic xử lý Dart
+├── Pcm.Api/                 # .NET Backend API (Source Code)
+│   ├── Pcm.Api/             # Logic API Controllers & Models
+│   ├── Dockerfile           # Cấu hình đóng gói Docker
+│   └── render.yaml          # Cấu hình Infrastructure-as-code cho Render
 └── README.md
 ```
 
 ---
 
-## 🚀 Hướng dẫn cài đặt và chạy
+## 👤 Tài khoản Test (Khuyên dùng)
 
-### **1. Yêu cầu hệ thống**
-- **Flutter SDK** 3.10+ ([Tải tại đây](https://flutter.dev))
-- **.NET SDK** 8.0+ ([Tải tại đây](https://dotnet.microsoft.com))
-- **SQL Server** (hoặc LocalDB)
-- **Visual Studio 2022** hoặc **VS Code**
+Hệ thống đã được Seed sẵn dữ liệu mẫu để giảng viên dễ dàng kiểm tra các tính năng nâng cao:
 
-### **2. Chạy Backend API**
-
-```bash
-# Di chuyển vào thư mục Backend
-cd Pcm.Api/Pcm.Api
-
-# Restore packages
-dotnet restore
-
-# Chạy ứng dụng
-dotnet run
-```
-
-**Backend sẽ chạy tại**: `https://localhost:7043`  
-**Swagger UI**: `https://localhost:7043/swagger/index.html`
-
-### **3. Chạy Mobile App**
-
-```bash
-# Di chuyển vào thư mục Mobile
-cd pcm_mobile
-
-# Cài đặt dependencies
-flutter pub get
-
-# Chạy ứng dụng (Chrome Web)
-flutter run -d chrome
-
-# Hoặc Android Emulator
-flutter run -d emulator-5554
-```
-
-**Lưu ý**: Đảm bảo file `lib/core/constants.dart` có `baseUrl` trỏ đúng địa chỉ Backend:
-```dart
-static const String baseUrl = 'https://localhost:7043';
-```
-
----
-
-## 👤 Tài khoản Test
-
-### **Tài khoản Admin**
+### **1. Tài khoản Quản trị (Admin)**
 - **Username**: `admin`
 - **Password**: `123`
-- **Quyền**: Xem Dashboard thống kê, quản lý toàn bộ hệ thống
+- **Đặc quyền**: Xem Dashboard thống kê doanh thu, quản lý giải đấu.
 
-### **Tài khoản Member**
-- **Username**: `user`
-- **Password**: `123`
-- **Quyền**: Đặt sân, xem giải đấu, quản lý ví
-
-> ⚠️ **Lưu ý**: Anh cũng có thể **tạo tài khoản mới** bằng nút "ĐĂNG KÝ TÀI KHOẢN MỚI" trên màn hình Login.
+### **2. Tài khoản Hội viên (Member)**
+- **Username**: Có thể tự đăng ký mới trực tiếp trên App.
+- **Tài khoản mẫu**: `user` / `123` (Nếu đã đăng ký).
 
 ---
 
-## 🎯 Các chức năng chính
+## 🏁 Hướng dẫn test nhanh (Cho Giảng Viên)
 
-### **1. Đăng nhập & Đăng ký**
-- Đăng nhập bằng Username/Password
-- Đăng ký tài khoản mới (tự động tạo Member)
-- JWT Authentication
+1. **Test trên Android**:
+   - Tải file `app-release.apk` trong thư mục `pcm_mobile/build/app/outputs/flutter-apk/`.
+   - Cài đặt lên điện thoại/giả lập.
+   - Đăng nhập bằng tài khoản `admin` / `123`.
 
-### **2. Dashboard (Trang chủ)**
-- Hiển thị thông tin thành viên (Tên, Tier, DUPR Rating)
-- Số dư ví điện tử
-- **Admin Dashboard** (chỉ Admin): Xem thống kê tổng quan
+2. **Test API trực tiếp**:
+   - Truy cập [Swagger UI](https://one771020711-nguyenmanhtuan.onrender.com/swagger).
+   - Thử gọi các endpoint `/api/auth/login` hoặc `/api/members`.
 
-### **3. Đặt sân (Booking)**
-- Xem lịch sân theo tuần/tháng
-- Đặt sân theo khung giờ
-- Xác nhận đặt sân
-
-### **4. Ví điện tử (Wallet)**
-- Xem số dư và lịch sử giao dịch
-- Nạp tiền vào ví (Demo)
-- Thanh toán booking bằng ví
-
-### **5. Giải đấu (Tournament)**
-- Xem danh sách giải đấu (Sắp diễn ra, Đang đấu, Kết thúc)
-- Xem chi tiết giải đấu với **Bracket visualization**
-- Đăng ký tham gia giải đấu
-
-### **6. Thống kê (Admin Dashboard)**
-- **Tổng doanh thu** (từ booking)
-- **Số lượng booking**
-- **Số lượng thành viên**
-- **Biểu đồ doanh thu** theo tháng
-- **Top 5 thành viên** chi tiêu nhiều nhất
-
-### **7. Hồ sơ (Profile)**
-- Xem thông tin cá nhân
-- Đăng xuất
+3. **Lưu ý về Cold Start**:
+   - Vì dùng gói **Render Free Tier**, nếu server không có request trong 15 phút sẽ tự "ngủ".
+   - **Lần đầu mở App có thể mất 30-60 giây** để server thức dậy (Timeout). Bạn chỉ cần đợi 1 phút và nhấn lại là sẽ cực kỳ nhanh.
 
 ---
 
-## 🌐 API Endpoints (Backend)
+## 📝 Thành tựu kỹ thuật đã đạt được
 
-### **Authentication**
-- `POST /api/auth/register` - Đăng ký tài khoản mới
-- `POST /api/auth/login` - Đăng nhập (trả về JWT token)
-- `GET /api/auth/me` - Lấy thông tin user hiện tại
-
-### **Bookings**
-- `GET /api/bookings` - Lấy danh sách booking
-- `POST /api/bookings` - Tạo booking mới
-- `POST /api/bookings/confirm` - Xác nhận booking
-
-### **Wallet**
-- `GET /api/wallet/transactions/{memberId}` - Xem lịch sử giao dịch
-- `POST /api/wallet/deposit` - Nạp tiền vào ví
-
-### **Statistics (Admin only)**
-- `GET /api/statistics/dashboard` - Thống kê tổng quan
-- `GET /api/statistics/revenue?year=2024` - Doanh thu theo tháng
-- `GET /api/statistics/top-members` - Top 5 members
+- ✅ **Full Deployment**: Triển khai thành công cả App và API lên môi trường Cloud.
+- ✅ **Database Migration**: Chuyển đổi thành công từ SQL Server sang PostgreSQL để chạy trên môi trường Web/Cloud.
+- ✅ **Security**: Triển khai cơ chế phân quyền Admin/Member chặt chẽ qua Token.
+- ✅ **Auto-Migration**: Hệ thống tự động khởi tạo database và dữ liệu mẫu khi deploy.
 
 ---
 
-## 📹 Video Demo
+**Dự án được thực hiện với mục tiêu mang lại trải nghiệm chuyên nghiệp nhất cho người dùng!**
 
-> **Lưu ý**: Anh cần quay video demo (5-10 phút) thao tác các chức năng chính:
-> 1. Đăng nhập
-> 2. Xem Dashboard (User & Admin)
-> 3. Đặt sân
-> 4. Xem ví và lịch sử giao dịch
-> 5. Xem giải đấu
-> 6. (Admin) Xem thống kê
-
-**Upload lên YouTube (Unlisted)** hoặc **Google Drive** (Public View).
-
----
-
-## 📤 Hướng dẫn nộp bài
-
-### **1. Link Repository (GitHub/GitLab)**
-```bash
-# Tạo repo mới trên GitHub
-git init
-git add .
-git commit -m "Initial commit - PCM Mobile App"
-git remote add origin https://github.com/<your-username>/pcm-mobile.git
-git push -u origin main
-```
-
-### **2. Link Sản phẩm Online**
-- **Backend Swagger**: `https://localhost:7043/swagger/index.html` (nếu deploy lên Azure/Heroku thì cung cấp link online)
-- **Mobile App**: Nếu deploy lên web hosting, cung cấp link. Nếu APK, cung cấp link Google Drive.
-
-### **3. Link Video Demo**
-- Quay video demo và upload lên YouTube (Unlisted)
-- Hoặc upload lên Google Drive (mở quyền View)
-
-### **4. Tài khoản Test**
-```
-👤 Admin: admin / 123
-👤 Member: user / 123
-```
-
----
-
-## 📝 Ghi chú kỹ thuật
-
-### **Các vấn đề đã giải quyết**
-- ✅ JWT Authentication với .NET Backend
-- ✅ CORS Configuration cho Flutter Web/Mobile
-- ✅ State Management với Provider
-- ✅ API Integration với Dio
-- ✅ Real-time updates (SignalR - optional)
-- ✅ Responsive UI cho Mobile & Web
-
-### **Database Setup**
-- Backend tự động tạo database khi chạy lần đầu (Code First Migration)
-- Connection string: `appsettings.json`
-
----
-
-## 📞 Liên hệ
-
-- **Email**: nguyenmanhtuan@example.com
-- **MSSV**: 1771020711
-- **Lớp**: Mobile Development
-
----
-
-## 📜 License
-
-Dự án này được phát triển cho mục đích học tập.
-
-**© 2024 Nguyễn Mạnh Tuấn - Vợt Thủ Phố Núi**
+**© 2024 Nguyễn Mạnh Tuấn - Pickleball Vợt Thủ Phố Núi**
