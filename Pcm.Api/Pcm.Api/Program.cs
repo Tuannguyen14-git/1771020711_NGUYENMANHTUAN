@@ -187,6 +187,18 @@ using (var scope = app.Services.CreateScope())
             });
             context.SaveChanges();
         }
+
+        // Seed default courts if not exists
+        if (!context.Courts.Any())
+        {
+            context.Courts.AddRange(new List<_177_Courts>
+            {
+                new _177_Courts { Name = "Sân 1 - Tiêu chuẩn", IsActive = true, PricePerHour = 100000m, Description = "Sân pickleball trong nhà chất lượng cao." },
+                new _177_Courts { Name = "Sân 2 - VIP", IsActive = true, PricePerHour = 150000m, Description = "Sân VIP với mái che và điều hòa." },
+                new _177_Courts { Name = "Sân 3 - Ngoài trời", IsActive = true, PricePerHour = 80000m, Description = "Sân ngoài trời thoáng đãng." }
+            });
+            context.SaveChanges();
+        }
     }
     catch (Exception ex)
     {
