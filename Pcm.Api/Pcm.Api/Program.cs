@@ -110,6 +110,37 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<PcmDbContext>();
         context.Database.Migrate(); // Apply pending migrations
+        
+        // Seed default admin account if not exists
+        if (!context.AppUsers.Any(u => u.Username == "admin"))
+        {
+            var adminUser = new Pcm.Api.Models.AppUser
+            {
+                Username = "admin",
+                Password = "123", // Simple for testing
+                Role = "Admin"
+            };
+            context.AppUsers.Add(adminUser);
+            context.SaveChanges();
+            
+            // Link to a Member record
+            if (!context.Members.Any(m => m.AppUserId == adminUser.Id))
+            {
+                context.Members.Add(new Pcm.Api.Models._177_Members
+                {
+                    AppUserId = adminUser.Id,
+                    FullName = "Administrator",
+                    JoinDate = DateTime.Now,
+                    RankLevel = 5.0,
+                    IsActive = true,
+                    WalletBalance = 1000000,
+                    TotalSpent = 0,
+                    Tier = Pcm.Api.Enums.MemberTier.VIP,
+                    AvatarUrl = ""
+                });
+                context.SaveChanges();
+            }
+        }
     }
     catch (Exception ex)
     {
