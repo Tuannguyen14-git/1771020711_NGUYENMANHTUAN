@@ -2,7 +2,7 @@
 
 **Đồ án Môn học Mobile - Flutter & Backend API**  
 **MSSV**: 1771020711  
-**Họ tên**: Nguyễn Mạnh Tuấn
+**Họ tên**: Nguyễn Mạnh Tuân
 
 ---
 
@@ -105,4 +105,4 @@ Hệ thống đã được Seed sẵn dữ liệu mẫu để giảng viên dễ
 
 **Dự án được thực hiện với mục tiêu mang lại trải nghiệm chuyên nghiệp nhất cho người dùng!**
 
-**© 2024 Nguyễn Mạnh Tuấn - Pickleball Vợt Thủ Phố Núi**
+**© 2024 Nguyễn Mạnh Tuân - Pickleball Vợt Thủ Phố Núi**
