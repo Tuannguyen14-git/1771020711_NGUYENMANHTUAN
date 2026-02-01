@@ -5,6 +5,8 @@ using System.Text;
 using Pcm.Api.Data;
 using Pcm.Api.BackgroundServices;
 using Pcm.Api.Hubs;
+using Pcm.Api.Models;
+using Pcm.Api.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -114,7 +116,7 @@ using (var scope = app.Services.CreateScope())
         // Seed default admin account if not exists
         if (!context.AppUsers.Any(u => u.Username == "admin"))
         {
-            var adminUser = new Pcm.Api.Models.AppUser
+            var adminUser = new AppUser
             {
                 Username = "admin",
                 Password = "123", // Simple for testing
@@ -126,16 +128,16 @@ using (var scope = app.Services.CreateScope())
             // Link to a Member record
             if (!context.Members.Any(m => m.AppUserId == adminUser.Id))
             {
-                context.Members.Add(new Pcm.Api.Models._177_Members
+                context.Members.Add(new _177_Members
                 {
                     AppUserId = adminUser.Id,
                     FullName = "Administrator",
                     JoinDate = DateTime.Now,
                     RankLevel = 5.0,
                     IsActive = true,
-                    WalletBalance = 1000000,
-                    TotalSpent = 0,
-                    Tier = Pcm.Api.Enums.MemberTier.VIP,
+                    WalletBalance = 1000000m,
+                    TotalSpent = 0m,
+                    Tier = MemberTier.Diamond,
                     AvatarUrl = ""
                 });
                 context.SaveChanges();
