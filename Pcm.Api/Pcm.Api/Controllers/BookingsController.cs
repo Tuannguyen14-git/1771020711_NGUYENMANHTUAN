@@ -258,7 +258,6 @@ public class BookingsController : ControllerBase
         });
     }
     // POST: api/bookings/confirm
-    [Authorize]
     [HttpPost("confirm")]
     public async Task<IActionResult> ConfirmHold(BookingConfirmDto dto)
     {
