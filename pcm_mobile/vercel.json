@@ -1,6 +1,7 @@
 {
-  "buildCommand": "echo 'Using pre-built files from build/web'",
-  "outputDirectory": "build/web",
+  "version": 2,
+  "buildCommand": "echo 'Build handled by GitHub Actions'",
+  "outputDirectory": ".",
   "routes": [
     {
       "handle": "filesystem"
