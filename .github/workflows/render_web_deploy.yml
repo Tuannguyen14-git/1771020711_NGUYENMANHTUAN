@@ -31,13 +31,18 @@ jobs:
         run: flutter build web --release --base-href /
         working-directory: ./pcm_mobile
 
-      - name: Check build output
-        run: ls -R pcm_mobile/build/web
+      - name: Debug - List directories
+        run: |
+          pwd
+          ls -R pcm_mobile/build/web
 
-      - name: Deploy to web-deploy branch
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: pcm_mobile/build/web
-          branch: web-deploy
-          token: ${{ secrets.GITHUB_TOKEN }}
-          clean: true
+      - name: Deploy to web-deploy branch (Manual Git)
+        run: |
+          cd pcm_mobile/build/web
+          git init
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git checkout -b web-deploy
+          git add .
+          git commit -m "Deploy web build"
+          git push --force "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" web-deploy
