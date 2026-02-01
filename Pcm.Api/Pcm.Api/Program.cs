@@ -113,131 +113,110 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<PcmDbContext>();
         context.Database.Migrate(); // Apply pending migrations
         
-        // Seed default admin account if not exists
-        var adminUser = context.AppUsers.FirstOrDefault(u => u.Username == "admin");
-        if (adminUser == null)
+        // --- 1. SEED ADMIN ---
+        try
         {
-            adminUser = new AppUser
+            var adminUser = context.AppUsers.FirstOrDefault(u => u.Username == "admin");
+            if (adminUser == null)
             {
-                Username = "admin",
-                Password = "123", 
-                Role = "Admin"
-            };
-            context.AppUsers.Add(adminUser);
-            context.SaveChanges();
-        }
-        else
-        {
-            // Ensure password is correct
-            adminUser.Password = "123";
-            context.SaveChanges();
-        }
-            
-        // Link to a Member record
-        if (!context.Members.Any(m => m.AppUserId == adminUser.Id))
-        {
-            context.Members.Add(new _177_Members
+                adminUser = new AppUser { Username = "admin", Password = "123", Role = "Admin" };
+                context.AppUsers.Add(adminUser);
+                context.SaveChanges();
+            }
+            if (!context.Members.Any(m => m.AppUserId == adminUser.Id))
             {
-                AppUserId = adminUser.Id,
-                FullName = "Administrator",
-                JoinDate = DateTime.Now,
-                RankLevel = 5.0,
-                IsActive = true,
-                WalletBalance = 1000000m,
-                TotalSpent = 0m,
-                Tier = MemberTier.Diamond,
-                AvatarUrl = ""
-            });
-            context.SaveChanges();
+                context.Members.Add(new _177_Members
+                {
+                    AppUserId = adminUser.Id,
+                    FullName = "Administrator",
+                    JoinDate = DateTime.Now,
+                    RankLevel = 5.0,
+                    IsActive = true,
+                    WalletBalance = 1000000m,
+                    Tier = MemberTier.Diamond
+                });
+                context.SaveChanges();
+            }
         }
+        catch (Exception ex) { Console.WriteLine($"Seeding Admin failed: {ex.Message}"); }
 
-        // Seed default member account if not exists
-        var regularUser = context.AppUsers.FirstOrDefault(u => u.Username == "user");
-        if (regularUser == null)
+        // --- 2. SEED MEMBER ---
+        try
         {
-            regularUser = new AppUser
+            var regularUser = context.AppUsers.FirstOrDefault(u => u.Username == "user");
+            if (regularUser == null)
             {
-                Username = "user",
-                Password = "123",
-                Role = "Member"
-            };
-            context.AppUsers.Add(regularUser);
-            context.SaveChanges();
-        }
-        else
-        {
-            // Ensure password is correct
-            regularUser.Password = "123";
-            context.SaveChanges();
-        }
-            
-        if (!context.Members.Any(m => m.AppUserId == regularUser.Id))
-        {
-            context.Members.Add(new _177_Members
+                regularUser = new AppUser { Username = "user", Password = "123", Role = "Member" };
+                context.AppUsers.Add(regularUser);
+                context.SaveChanges();
+            }
+            if (!context.Members.Any(m => m.AppUserId == regularUser.Id))
             {
-                AppUserId = regularUser.Id,
-                FullName = "Thành Viên Mẫu",
-                JoinDate = DateTime.Now,
-                RankLevel = 3.5,
-                IsActive = true,
-                WalletBalance = 500000m,
-                TotalSpent = 0m,
-                Tier = MemberTier.Gold,
-                AvatarUrl = ""
-            });
-            context.SaveChanges();
+                context.Members.Add(new _177_Members
+                {
+                    AppUserId = regularUser.Id,
+                    FullName = "Thành Viên Mẫu",
+                    JoinDate = DateTime.Now,
+                    RankLevel = 3.5,
+                    IsActive = true,
+                    WalletBalance = 500000m,
+                    Tier = MemberTier.Gold
+                });
+                context.SaveChanges();
+            }
         }
+        catch (Exception ex) { Console.WriteLine($"Seeding Member failed: {ex.Message}"); }
 
-        // Seed default courts if not exists
-        if (!context.Courts.Any())
+        // --- 3. SEED COURTS ---
+        try
         {
-            context.Courts.AddRange(new List<_177_Courts>
+            if (!context.Courts.Any())
             {
-                new _177_Courts { Name = "Sân 1 - Tiêu chuẩn", IsActive = true, PricePerHour = 100000m, Description = "Sân pickleball trong nhà chất lượng cao." },
-                new _177_Courts { Name = "Sân 2 - VIP", IsActive = true, PricePerHour = 150000m, Description = "Sân VIP với mái che và điều hòa." },
-                new _177_Courts { Name = "Sân 3 - Ngoài trời", IsActive = true, PricePerHour = 80000m, Description = "Sân ngoài trời thoáng đãng." }
-            });
-            context.SaveChanges();
+                context.Courts.AddRange(new List<_177_Courts>
+                {
+                    new _177_Courts { Name = "Sân 1 - Tiêu chuẩn", IsActive = true, PricePerHour = 100000m, Description = "Sân trong nhà chất lượng cao." },
+                    new _177_Courts { Name = "Sân 2 - VIP", IsActive = true, PricePerHour = 150000m, Description = "Sân VIP có máy che." },
+                    new _177_Courts { Name = "Sân 3 - Ngoài trời", IsActive = true, PricePerHour = 80000m, Description = "Sân ngoài trời thoáng đãng." }
+                });
+                context.SaveChanges();
+            }
         }
+        catch (Exception ex) { Console.WriteLine($"Seeding Courts failed: {ex.Message}"); }
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating the database.");
+        logger.LogError(ex, "Critical error during DB migration/startup.");
     }
 }
 
-
-#region MIDDLEWARE PIPELINE
+#region MIDDLEWARE
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseCors("AllowAll");      // ⚠️ CORS PHẢI TRƯỚC AUTH
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 app.MapHub<PcmHub>("/pcmHub");
 
-// Root endpoint for simple health check
+// FAIL-SAFE HEALTH CHECK (Always returns 200 OK for Render)
 app.MapGet("/", async (PcmDbContext context) => 
 {
+    var dbStatus = "Checking...";
     try 
     {
-        // Try to check if database is reachable
         bool canConnect = await context.Database.CanConnectAsync();
-        return Results.Ok(new { 
-            Status = "PCM API is running!", 
-            Database = canConnect ? "Connected (PostgreSQL)" : "Connection Failed",
-            Message = "Deploy successfully by Nguyen Mạnh Tuấn"
-        });
+        dbStatus = canConnect ? "Connected" : "Connection Failed";
     }
-    catch (Exception ex)
-    {
-        return Results.Problem($"API is UP, but Database error: {ex.Message}");
-    }
-});
+    catch (Exception ex) { dbStatus = $"Error: {ex.Message}"; }
 
+    return Results.Ok(new { 
+        Status = "PCM API is running!", 
+        Database = dbStatus,
+        Owner = "Nguyen Mạnh Tuấn",
+        Note = "If Database is 'Error', please wait 30s and refresh."
+    });
+});
 #endregion
 
 app.Run();
