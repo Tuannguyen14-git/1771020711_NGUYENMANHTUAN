@@ -208,7 +208,23 @@ app.MapControllers();
 app.MapHub<PcmHub>("/pcmHub");
 
 // Root endpoint for simple health check
-app.MapGet("/", () => "PCM API is running on Render!");
+app.MapGet("/", async (PcmDbContext context) => 
+{
+    try 
+    {
+        // Try to check if database is reachable
+        bool canConnect = await context.Database.CanConnectAsync();
+        return Results.Ok(new { 
+            Status = "PCM API is running!", 
+            Database = canConnect ? "Connected (PostgreSQL)" : "Connection Failed",
+            Message = "Deploy successfully by Nguyen Mạnh Tuấn"
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem($"API is UP, but Database error: {ex.Message}");
+    }
+});
 
 #endregion
 
