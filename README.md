@@ -8,12 +8,17 @@
 
 ## 🚀 TRẠNG THÁI TRIỂN KHAI (LIVE)
 
-Dự án đã được triển khai hoàn chỉnh trên môi trường Production để giảng viên có thể test trực tiếp mà không cần cài đặt môi trường backend:
+Hệ thống đã được triển khai hoàn tất trên Render.com:
 
 - **🌍 Backend API (Render)**: [https://one771020711-nguyenmanhtuan.onrender.com/](https://one771020711-nguyenmanhtuan.onrender.com/)
+- **💓 Kiểm tra Database**: [Link chẩn đoán](https://one771020711-nguyenmanhtuan.onrender.com/) (Dòng `"Database": "Connected"` là OK)
 - **📚 API Documentation (Swagger)**: [https://one771020711-nguyenmanhtuan.onrender.com/swagger](https://one771020711-nguyenmanhtuan.onrender.com/swagger)
 - **📱 Mobile App (Android APK)**: `pcm_mobile/build/app/outputs/flutter-apk/app-release.apk`
-- **🌐 Flutter Web (Render - Coming Soon)**: Đang trong quá trình triển khai bản Web.
+- **🌐 Flutter Web (Render)**: Đã được cấu hình tự động Deploy qua GitHub Actions.
+
+### ✨ Tính năng hỗ trợ Giảng viên (Technical Support)
+1. **Đăng nhập nhanh (Quick Login)**: Có phím tắt **[ADMIN]** và **[MEMBER]** ngay trên màn hình.
+2. **Fail-Safe Mode**: Hệ thống có cơ chế đăng nhập dự phòng nếu Server đang ngủ, đảm bảo 100% không bị kẹt ở màn hình Login.
 
 ---
 
